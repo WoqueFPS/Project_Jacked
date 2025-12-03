@@ -24,3 +24,22 @@ def add_exercise_interactive():
     exercise = Exercise(name, sets, reps, weight)
     print("Oefening toegevoegd:", exercise)
     return exercise
+
+def log_workout():
+    date = input("Datum van workout (bijv 2025-03-01): ")
+
+    workout = Workout(date)
+
+    while True:
+        ex = add_exercise_interactive()
+        if ex:
+            workout.add_exercise(ex)
+
+        doorgaan = input("Nog een oefening toevoegen? (y/n): ").lower()
+        if doorgaan != "y":
+            break
+
+    # Opslaan in CSV
+    storage.save_workout(workout)
+
+    print("Workout succesvol opgeslagen!")
