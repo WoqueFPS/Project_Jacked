@@ -5,7 +5,7 @@ from storage import Storage
 storage = Storage()
 
 def add_exercise_interactive():
-    print("=== Oefening toevoegen ===")
+    print("Exercise toevoegen")
 
     # Error handling (lege input of verkeerde input)
     name = input("Naam oefening: ").strip()
@@ -31,15 +31,34 @@ def log_workout():
     workout = Workout(date)
 
     while True:
-        ex = add_exercise_interactive()
-        if ex:
-            workout.add_exercise(ex)
-
+        add = add_exercise_interactive()
+        if add:
+            workout.add_exercise(add)
         doorgaan = input("Nog een oefening toevoegen? (y/n): ").lower()
         if doorgaan != "y":
             break
-
     # Opslaan in CSV
     storage.save_workout(workout)
-
     print("Workout succesvol opgeslagen!")
+
+def main():
+    while True:
+        print("Gym Progress")
+        print("1. Oefening toevoegen")
+        print("2. Workout loggen")
+        print("3. Stoppen")
+
+        keuze = input("Maak een keuze: ")
+
+        if keuze == "1":
+            add_exercise_interactive()
+        elif keuze == "2":
+            log_workout()
+        elif keuze == "3":
+            print("Programma afgesloten.")
+            break
+        else:
+            print("Ongeldige keuze, probeer opnieuw.")
+
+if __name__ == "__main__":
+    main()
