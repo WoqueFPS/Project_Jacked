@@ -7,7 +7,6 @@ storage = Storage()
 def add_exercise_interactive():
     print("Exercise toevoegen")
 
-    # Error handling (lege input of verkeerde input)
     name = input("Naam oefening: ").strip()
     if name == "":
         print("FOUT: Naam mag niet leeg zijn.")
@@ -22,8 +21,11 @@ def add_exercise_interactive():
         return None
 
     exercise = Exercise(name, sets, reps, weight)
-    print("Oefening toegevoegd:", exercise)
-    return exercise
+
+    # 👉 SAVE TO CSV — jouw probleem
+    storage.save_exercise(exercise)
+    print(f"Oefening '{name}' succesvol toegevoegd!")
+
 
 def log_workout():
     date = input("Datum van workout (bijv 2025-03-01): ")
