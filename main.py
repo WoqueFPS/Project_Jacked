@@ -4,80 +4,96 @@ from storage import Storage
 
 storage = Storage()
 
-def add_exercise_interactive(save=True):
-    print("Exercise toevoegen")
-
-    name = input("Naam oefening: ").strip()
+def add_exercise():
+    print("Add Exercise")
+    name = input("Exercise name: ")
+    
     if name == "":
-        print("FOUT: Naam mag niet leeg zijn.")
-        return None
-
+        print("Naam kan niet leeg zijn")
+        return
+    
     try:
         sets = int(input("Sets: "))
         reps = int(input("Reps: "))
-        weight = float(input("Gewicht (kg): "))
-    except ValueError:
-        print("FOUT: Voer een geldig nummer in.")
-        return None
-
+        weight = float(input("Weight (kg): "))
+    except:
+        print("voer alleen nummers in")
+        return
+    
     exercise = Exercise(name, sets, reps, weight)
-
-    if save:
-        storage.save_exercise(exercise)
-        print("Oefening opgeslagen in exercises.csv")
-
-    return exercise
+    storage.save_exercise(exercise)
+    print(f"Exercise '{name}' saved!")
 
 def log_workout():
-    date = input("Datum van workout (bijv 2025-03-01): ")
-
+    print("Log Workout")
+    date = input("Date (e.g. 14-12-2025): ")
     workout = Workout(date)
-
-    while True:
-        add = add_exercise_interactive(save=False)
-        if add:
-            workout.add_exercise(add)
-        doorgaan = input("Nog een oefening toevoegen? (y/n): ").lower()
-        if doorgaan != "y":
-            break
-
+    
+    keep_adding = True
+    while keep_adding == True:
+        name = input("Exercise name: ")
+        if name == "":
+            print("Naam kan niet leeg zijn")
+            continue
+        
+        try:
+            sets = int(input("Sets: "))
+            reps = int(input("Reps: "))
+            weight = float(input("Weight (kg): "))
+        except:
+            print("Voer alleen nummers in")
+            continue
+        
+        exercise = Exercise(name, sets, reps, weight)
+        workout.add_exercise(exercise)
+        print(f"'{name}' added!")
+        
+        answer = input("\nAdd another? (yes/no): ")
+        if answer.lower() != "yes":
+            keep_adding = False
+    
     storage.save_workout(workout)
-    print("Workout succesvol opgeslagen!")
+    print("Workout saved!")
 
-def show_exercises():
+def view_exercises():
+    print("My Exercises")
     exercises = storage.load_exercises()
-
-    if not exercises:
-        print("Geen oefeningen om te tonen.")
+    
+    if len(exercises) == 0:
+        print("No exercises yet.")
         return
-
-    print("\nOpgeslagen oefeningen:")
-    print("----------------------------")
-
-    for i, (name, sets, reps, weight) in enumerate(exercises, start=1):
-        print(f"{i}. {name} - {sets} sets, {reps} reps, {weight}kg")
+    
+    number = 1
+    for ex in exercises:
+        print(f"\n{number}. {ex[0]}")
+        print(f"   Sets: {ex[1]} | Reps: {ex[2]} | Weight: {ex[3]} kg")
+        number = number + 1
 
 def main():
-    while True:
-        print("\nGym Progress")
-        print("1. Oefening toevoegen")
-        print("2. Workout loggen")
-        print("3. Oefeningen bekijken")
-        print("4. Stoppen")
-
-        keuze = input("Maak een keuze: ").strip()
-
-        if keuze == "1":
-            add_exercise_interactive()
-        elif keuze == "2":
+    print("\n" + "="*40)
+    print("GYM PROGRESS TRACKER")
+    print("="*40)
+    
+    running = True
+    while running == True:
+        print("1. Add exercise")
+        print("2. Log workout")
+        print("3. View exercises")
+        print("4. Quit")
+        
+        choice = input("Choose (1-4): ")
+        
+        if choice == "1":
+            add_exercise()
+        elif choice == "2":
             log_workout()
-        elif keuze == "3":
-            show_exercises()
-        elif keuze == "4":
-            print("Programma afgesloten.")
-            break
+        elif choice == "3":
+            view_exercises()
+        elif choice == "4":
+            print("Thanks for using Gym Progress Tracker!")
+            running = False
         else:
-            print("Ongeldige keuze, probeer opnieuw.")
+            print("Invalid choice!")
 
 if __name__ == "__main__":
     main()
